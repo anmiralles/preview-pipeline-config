@@ -1,0 +1,62 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: my-quarkus-demo-preview-app
+  namespace: janus-argocd
+spec:
+  generators:
+    - pullRequest:
+        gitlab:
+          # The GitLab project ID.
+          project: "7"
+          # For self-hosted GitLab (optional)
+          api: https://gitlab-gitlab.apps.cluster-2kpzz.2kpzz.sandbox5399.opentlc.com/
+          # Reference to a Secret containing an access token. (optional)
+          #tokenRef:
+            #secretName: my-quarkus-demo-app-git-token
+            #key: token
+          # Labels is used to filter the MRs that you want to target. (optional)
+          #labels:
+          #- preview
+          # MR state is used to filter MRs only with a certain state. (optional)
+          pullRequestState: opened
+          # If true, skips validating the SCM provider's TLS certificate - useful for self-signed certificates.
+          insecure: true
+          # Reference to a ConfigMap containing trusted CA certs - useful for self-signed certificates. (optional)
+          #caRef:
+            #configMapName: argocd-tls-certs-cm
+            #key: gitlab-ca        
+        # Interval in seconds to re-check the Git provider for new/updated PRs.
+        requeueAfterSeconds: 120
+  goTemplate: true
+  goTemplateOptions:
+    - missingkey=error
+  template:
+    metadata:
+      name: 'my-quarkus-demo-app-pr-{{ .number }}'
+    spec:
+      destination:
+        namespace: 'my-quarkus-demo-app-pr-{{ .number }}'
+        server: 'https://kubernetes.default.svc'
+      project: janus
+      source:
+        repoURL: https://gitlab-gitlab.apps.cluster-2kpzz.2kpzz.sandbox5399.opentlc.com/development/my-quarkus-demo-app-gitops.git
+        targetRevision: HEAD
+        path: ./helm/app
+        helm:
+          parameters:
+          - name: namespace.name
+            value: 'my-quarkus-demo-app-pr-{{ .number }}'
+          - name: environment
+            value: dev
+          - name: image.tag
+            value: pr-{{ .number }}
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - Replace=true
+          - ApplyOutOfSyncOnly=true
+          - PruneLast=true

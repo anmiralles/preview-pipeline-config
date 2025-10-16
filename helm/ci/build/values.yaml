@@ -1,0 +1,22 @@
+app:
+  name: preview-pipeline-app
+  namespace: preview-pipeline-app-dev
+  cluster: .apps.cluster-2kpzz.2kpzz.sandbox5399.opentlc.com
+
+git:
+  branch: master
+  repo: https://gitlab-gitlab.apps.cluster-2kpzz.2kpzz.sandbox5399.opentlc.com/development/preview-pipeline-app.git
+  org: development
+  name: preview-pipeline-app
+  host: gitlab-gitlab.apps.cluster-2kpzz.2kpzz.sandbox5399.opentlc.com
+  token: ''
+  webhookSecret: ''
+  verify_commits: disabled
+
+
+image:
+  registry: Quay
+  organization: quayadmin
+  host: quay-2kpzz.apps.cluster-2kpzz.2kpzz.sandbox5399.opentlc.com
+  name: preview-pipeline-app
+  tag: latest

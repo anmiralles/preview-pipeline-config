@@ -1,0 +1,14 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: merge-binding
+  namespace: my-quarkus-demo-app-dev
+spec:
+  params:
+  - name: git-repo-url
+    value: $(body.project.git_http_url)
+  - name: git-revision
+    value: $(body.object_attributes.last_commit.id)
+  - name: git-committer
+    value: $(body.user.username)
+

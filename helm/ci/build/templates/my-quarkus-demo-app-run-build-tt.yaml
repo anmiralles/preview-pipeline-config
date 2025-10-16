@@ -1,0 +1,89 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"triggers.tekton.dev/v1alpha1","kind":"TriggerTemplate","metadata":{"annotations":{},"labels":{"rht-gitops.com/janus-argocd":"my-quarkus-demo-app-dev-build"},"name":"my-quarkus-demo-app-run-build","namespace":"my-quarkus-demo-app-dev"},"spec":{"params":[{"default":"master","description":"The git revision","name":"git-revision"},{"description":"The repo url","name":"git-repo-url"},{"default":"quay-2kpzz.apps.cluster-2kpzz.2kpzz.sandbox5399.opentlc.com/quayadmin/my-quarkus-demo-app","description":"reference of the image that will get created","name":"output-image"},{"description":"Email of user who committed the change","name":"git-committer"}],"resourcetemplates":[{"apiVersion":"tekton.dev/v1beta1","kind":"PipelineRun","metadata":{"generateName":"my-quarkus-demo-app-run-build-","labels":{"backstage.io/kubernetes-id":"my-quarkus-demo-app"}},"spec":{"params":[{"name":"source-repo","value":"$(tt.params.git-repo-url)"},{"name":"source-branch","value":"$(tt.params.git-revision)"},{"name":"output-image","value":"$(tt.params.output-image)"},{"name":"sonarqube-host-url","value":"https://sonarqube-sonarqube.apps.cluster-2kpzz.2kpzz.sandbox5399.opentlc.com"},{"name":"sonarqube-project-key","value":"my-quarkus-demo-app"},{"name":"sonarqube-project-secret","value":"my-quarkus-demo-app-sonarqube-secret"},{"name":"cyclonedx-host-url","value":"https://cyclonedx-bom-repo-server-cyclonedx.apps.cluster-2kpzz.2kpzz.sandbox5399.opentlc.com"},{"name":"stackrox-endpoint","value":"central-stackrox.apps.cluster-2kpzz.2kpzz.sandbox5399.opentlc.com:443"},{"name":"stackrox-secret","value":"my-quarkus-demo-app-stackrox-token"},{"name":"git-host","value":"gitlab-gitlab.apps.cluster-2kpzz.2kpzz.sandbox5399.opentlc.com"},{"name":"git-owner","value":"development"},{"name":"component-id","value":"my-quarkus-demo-app"},{"name":"common-password-secret","value":"common-password-secret"},{"name":"rekor-url","value":"http://rekor-server.trusted-artifact-signer.svc"},{"name":"tuf-mirror","value":"http://tuf.trusted-artifact-signer.svc"},{"name":"certificate-identity","value":"$(tt.params.git-committer)"},{"name":"oidc-issuer","value":"https://keycloak-rhsso.apps.cluster-2kpzz.2kpzz.sandbox5399.opentlc.com/auth/realms/openshift"}],"pipelineRef":{"name":"my-quarkus-demo-app-build"},"serviceAccountName":"pipeline","timeout":"1h0m0s","workspaces":[{"emptyDir":{},"name":"reports"},{"name":"source-folder","volumeClaimTemplate":{"spec":{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"1Gi"}}}}},{"emptyDir":{},"name":"maven-settings"},{"name":"docker-config","secret":{"secretName":"my-quarkus-demo-app-registry-creds"}}]}}]}}
+  creationTimestamp: "2025-09-24T06:57:16Z"
+  generation: 1
+  labels:
+    rht-gitops.com/janus-argocd: my-quarkus-demo-app-dev-build
+  name: my-quarkus-demo-app-run-build
+  namespace: my-quarkus-demo-app-dev
+  resourceVersion: "940748"
+  uid: 960971f9-076b-4f0b-a1ee-e80f33d56cdb
+spec:
+  params:
+  - default: master
+    description: The git revision
+    name: git-revision
+  - description: The repo url
+    name: git-repo-url
+  - default: quay-2kpzz.apps.cluster-2kpzz.2kpzz.sandbox5399.opentlc.com/quayadmin/my-quarkus-demo-app
+    description: reference of the image that will get created
+    name: output-image
+  - description: Email of user who committed the change
+    name: git-committer
+  resourcetemplates:
+  - apiVersion: tekton.dev/v1beta1
+    kind: PipelineRun
+    metadata:
+      generateName: my-quarkus-demo-app-run-build-
+      labels:
+        backstage.io/kubernetes-id: my-quarkus-demo-app
+    spec:
+      params:
+      - name: source-repo
+        value: $(tt.params.git-repo-url)
+      - name: source-branch
+        value: $(tt.params.git-revision)
+      - name: output-image
+        value: $(tt.params.output-image)
+      - name: sonarqube-host-url
+        value: https://sonarqube-sonarqube.apps.cluster-2kpzz.2kpzz.sandbox5399.opentlc.com
+      - name: sonarqube-project-key
+        value: my-quarkus-demo-app
+      - name: sonarqube-project-secret
+        value: my-quarkus-demo-app-sonarqube-secret
+      - name: cyclonedx-host-url
+        value: https://cyclonedx-bom-repo-server-cyclonedx.apps.cluster-2kpzz.2kpzz.sandbox5399.opentlc.com
+      - name: stackrox-endpoint
+        value: central-stackrox.apps.cluster-2kpzz.2kpzz.sandbox5399.opentlc.com:443
+      - name: stackrox-secret
+        value: my-quarkus-demo-app-stackrox-token
+      - name: git-host
+        value: gitlab-gitlab.apps.cluster-2kpzz.2kpzz.sandbox5399.opentlc.com
+      - name: git-owner
+        value: development
+      - name: component-id
+        value: my-quarkus-demo-app
+      - name: common-password-secret
+        value: common-password-secret
+      - name: rekor-url
+        value: http://rekor-server.trusted-artifact-signer.svc
+      - name: tuf-mirror
+        value: http://tuf.trusted-artifact-signer.svc
+      - name: certificate-identity
+        value: $(tt.params.git-committer)
+      - name: oidc-issuer
+        value: https://keycloak-rhsso.apps.cluster-2kpzz.2kpzz.sandbox5399.opentlc.com/auth/realms/openshift
+      pipelineRef:
+        name: my-quarkus-demo-app-build
+      serviceAccountName: pipeline
+      timeout: 1h0m0s
+      workspaces:
+      - emptyDir: {}
+        name: reports
+      - name: source-folder
+        volumeClaimTemplate:
+          spec:
+            accessModes:
+            - ReadWriteOnce
+            resources:
+              requests:
+                storage: 1Gi
+      - emptyDir: {}
+        name: maven-settings
+      - name: docker-config
+        secret:
+          secretName: my-quarkus-demo-app-registry-creds

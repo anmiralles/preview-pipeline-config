@@ -1,0 +1,24 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"triggers.tekton.dev/v1alpha1","kind":"TriggerBinding","metadata":{"annotations":{},"labels":{"rht-gitops.com/janus-argocd":"my-quarkus-demo-app-dev-build"},"name":"commit-binding","namespace":"my-quarkus-demo-app-dev"},"spec":{"params":[{"name":"git-repo-url","value":"$(body.repository.git_http_url)"},{"name":"git-revision","value":"$(body.after)"},{"name":"git-committer","value":"$(body.user_email)"}]}}
+  creationTimestamp: "2025-09-24T06:57:16Z"
+  generation: 1
+  labels:
+    rht-gitops.com/janus-argocd: my-quarkus-demo-app-dev-build
+  name: commit-binding
+  namespace: my-quarkus-demo-app-dev
+  resourceVersion: "940692"
+  uid: 649a49f7-3d20-4f7d-9218-da27ccc54755
+spec:
+  params:
+  - name: git-repo-url
+    value: $(body.project.git_http_url)
+  - name: git-revision
+    value: $(body.object_attributes.last_commit.id)
+  - name: output-image-tag
+    value: $(body.object_attributes.iid)
+  - name: git-committer
+    value: $(body.user.username)
